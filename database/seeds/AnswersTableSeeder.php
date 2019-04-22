@@ -16,13 +16,13 @@ class AnswersTableSeeder extends Seeder
     {
         $users = User::inRandomOrder();
         $users->each(function($user){
-
-            $question = Question::inRandomOrder()->first();
-            $answer = factory(Answer::class)->make();
-            $answer->user()->associate($user);
-            $answer->question()->associate($question);
-            $answer->save();
-
+            for ($i=1 ; $i<=6 ; $i++) {
+                $question = Question::inRandomOrder()->first();
+                $answer = factory(Answer::class)->make();
+                $answer->user()->associate($user);
+                $answer->question()->associate($question);
+                $answer->save();
+            }
         });
     }
 }
