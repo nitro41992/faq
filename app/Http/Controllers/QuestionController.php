@@ -31,9 +31,10 @@ class QuestionController extends Controller
      */
     public function create()
     {
-        //
+        $question = new Question;
+        $edit = FALSE;
+        return view('questionForm', ['question' => $question,'edit' => $edit  ]);
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -42,7 +43,21 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->validate([
+            'body' => 'required|min:5',
+        ], [
+            'body.required' => 'Body is required',
+            'body.min' => 'Body must be at least 5 characters',
+        ]);
+
+        $input = request()->all();
+
+        $question = new Question($input);
+        $question->user()->associate(Auth::user());
+        $question->save();
+
+        return redirect()->route('home')->with('message', 'IT WORKS!');
+
     }
 
     /**
@@ -62,11 +77,11 @@ class QuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Question $question)
     {
-        //
+        $edit = TRUE;
+        return view('questionForm', ['question' => $question, 'edit' => $edit ]);
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -74,9 +89,20 @@ class QuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+
+    public function update(Request $request, Question $question)
     {
-        //
+        $input = $request->validate([
+            'body' => 'required|min:5',
+        ], [
+            'body.required' => 'Body is required',
+            'body.min' => 'Body must be at least 5 characters',
+        ]);
+
+        $question->body = $request->body;
+        $question->save();
+
+        return redirect()->route('questions.show',['question_id' => $question->id])->with('message', 'Saved');
     }
 
     /**
@@ -85,8 +111,10 @@ class QuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+
+    public function destroy(Question $question)
     {
-        //
+        $question->delete();
+        return redirect()->route('home')->with('message', 'Deleted');
     }
 }
