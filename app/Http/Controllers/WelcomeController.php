@@ -14,7 +14,7 @@ class WelcomeController extends Controller
      */
     public function index()
     {
-        $answers = DB::table('answers')
+        $questions = DB::table('answers')
             ->join('users', 'answers.user_id', '=', 'users.id')
             ->join('questions', 'answers.question_id', '=', 'questions.id')
             ->select('questions.id','questions.body', DB::raw('count(*) as answer_count'))
@@ -22,7 +22,7 @@ class WelcomeController extends Controller
             ->orderBy('questions.id', 'desc')
             ->get();
         //dd($answers);
-        $obj['answers'] = $answers;
+        $obj['questions'] = $questions;
         return view('welcome')
             ->with(compact('obj'));
     }

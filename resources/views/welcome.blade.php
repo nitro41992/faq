@@ -13,12 +13,12 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($obj['answers'] as $answer)
+            @foreach($obj['questions'] as $question)
                 <tr>
-                    <td>{{$answer->id}}</td>
-                    <td>{{$answer->body}}</td>
-                    <td>{{$answer->answer_count}}</td>
-                    <td> <a name="doc_select" href="{{ route('answers.create', ['question_id'=> $answer->id])}}" class="btn btn-primary btn-sm">Answer</a></td>
+                    <td>{{$question->id}}</td>
+                    <td>{{$question->body}}</td>
+                    <td>{{$question->answer_count}}</td>
+                    <td> <a name="doc_select" href="{{ route('questions.show', ['id' => $question->id]) }}" class="btn btn-primary btn-sm">Select</a></td>
                 </tr>
             @endforeach
             </tbody>
