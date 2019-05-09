@@ -17,7 +17,8 @@ class WelcomeController extends Controller
         $questions = DB::table('answers')
             ->join('users', 'answers.user_id', '=', 'users.id')
             ->join('questions', 'answers.question_id', '=', 'questions.id')
-            ->select('questions.id','questions.body', DB::raw('count(*) as answer_count'))
+            ->join('votes', 'votes.question_id', '=', 'questions.id')
+            ->select('questions.id','questions.body', DB::raw('count(answers.id) as answer_count'),DB::raw('count(votes.id) as vote_count'))
             ->groupBy('questions.id','questions.body')
             ->orderBy('questions.id', 'desc')
             ->get();
