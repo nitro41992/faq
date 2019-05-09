@@ -14,15 +14,25 @@ class WelcomeController extends Controller
      */
     public function index()
     {
-        $questions = DB::table('answers')
-            ->join('users', 'answers.user_id', '=', 'users.id')
-            ->join('questions', 'answers.question_id', '=', 'questions.id')
-            ->join('votes', 'votes.question_id', '=', 'questions.id')
-            ->select('questions.id','questions.body', DB::raw('count(answers.id) as answer_count'),DB::raw('count(votes.id) as vote_count'))
-            ->groupBy('questions.id','questions.body')
-            ->orderBy('questions.id', 'desc')
+        $questions = DB::table('questions')
+            ->leftJoin('answers', 'questions.id', '=', 'answers.question_id')
+            ->leftJoin('users', 'users.id', '=', 'questions.user_id')
+            ->leftJoin('votes as upv', function ($join) {
+                $join->on('questions.id', '=', 'upv.question_id')
+                    ->where('upv.status', '=', 'up');
+            })
+            ->leftJoin('votes as downv', function ($join) {
+                $join->on('downv.question_id', '=', 'questions.id')
+                    ->where('downv.status', '=', 'down');
+            })
+            ->select('questions.id', 'questions.body', DB::raw('count(answers.id) as answer_count'), DB::raw('count(upv.id) - count(downv.id) as vote_count'))
+            ->groupBy('questions.id', 'questions.body')
+            ->orderBy('vote_count', 'desc')
+            ->orderBy('answer_count', 'desc')
             ->get();
-        //dd($answers);
+
+
+        //dd($questions);
         $obj['questions'] = $questions;
         return view('welcome')
             ->with(compact('obj'));

@@ -12,6 +12,7 @@ $factory->define(Vote::class, function (Faker $faker) {
     $users = User::all()->pluck('id')->toArray();
     return [
         'user_id' => $faker->randomElement($users),
-        'question_id' => $faker->unique()->randomElement($questions),
+        'question_id' => $faker->randomElement($questions),
+        'status' => $faker->boolean(75) ? 'up' : 'down'
     ];
 });

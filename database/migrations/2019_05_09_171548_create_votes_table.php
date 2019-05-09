@@ -17,6 +17,7 @@ class CreateVotesTable extends Migration
             $table->bigIncrements('id');
             $table->integer('user_id');
             $table->integer('question_id');
+            $table->enum('status', ['up', 'down']);
             $table->timestamps();
         });
     }

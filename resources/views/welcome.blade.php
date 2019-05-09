@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <table class="table">
-            <thead class="thead-dark">
+<div class="container">
+    <table class="table">
+        <thead class="thead-dark">
             <tr>
                 <th scope="col">Votes</th>
                 <th scope="col">Question ID</th>
@@ -12,18 +12,19 @@
                 <th scope="col">Actions</th>
 
             </tr>
-            </thead>
-            <tbody>
+        </thead>
+        <tbody>
             @foreach($obj['questions'] as $question)
-                <tr>
-                    <td>{{$question->vote_count}}</td>
-                    <td>{{$question->id}}</td>
-                    <td>{{$question->body}}</td>
-                    <td>{{$question->answer_count}}</td>
-                    <td> <a name="doc_select" href="{{ route('questions.show', ['id' => $question->id]) }}" class="btn btn-primary btn-sm">Select</a></td>
-                </tr>
+            <tr>
+                <td>{{$question->vote_count}}</td>
+                <td>{{$question->id}}</td>
+                <td>{{$question->body}}</td>
+                <td>{{$question->answer_count}}</td>
+                <td> <a name="doc_select" href="{{ route('questions.show', ['id' => $question->id]) }}"
+                        class="btn btn-primary btn-sm">Select</a></td>
+            </tr>
             @endforeach
-            </tbody>
-        </table>
-    </div>
+        </tbody>
+    </table>
+</div>
 @endsection

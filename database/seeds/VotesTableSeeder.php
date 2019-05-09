@@ -12,7 +12,6 @@ class VotesTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Vote::class, 100)->create()->each(function ($vote) {
-        });
+        factory(App\Vote::class, 500)->create()->each(function ($vote) { });
     }
 }
