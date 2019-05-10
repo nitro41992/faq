@@ -34,16 +34,25 @@ class WelcomeController extends Controller
 
         $user = Auth::user();
 
-        // $votes = DB::table('votes')
-        //     ->where('user_id', '=', $user->id)
-        //     ->whereIn('question_id', $questions->pluck('id'))
-        //     ->get();
+        $upvotes = DB::table('votes')
+            ->where('user_id', '=', $user->id)
+            ->whereIn('question_id', $questions->pluck('id'))
+            ->where('status', '=', 'up')
+            ->pluck('question_id')
+            ->toArray();
+
+        $downvotes = DB::table('votes')
+        ->where('user_id', '=', $user->id)
+        ->whereIn('question_id', $questions->pluck('id'))
+        ->where('status', '=', 'down')
+        ->pluck('question_id')
+        ->toArray();
 
         $obj['questions'] = $questions;
 
-        //dd($votes);
+        //dd($questions);
         return view('welcome')
-            ->with(compact('obj', 'user'));
+            ->with(compact('obj', 'user', 'upvotes', 'downvotes'));
     }
 
     /**
@@ -114,7 +123,12 @@ class WelcomeController extends Controller
 
     public function upvote(Request $request)
     {
-        $input = $request->all();
+        DB::table('votes')
+            ->where('question_id', '=', $request->qid)
+            ->where('user_id', '=', $request->uid)
+            ->where('status', '=', 'down')
+            ->delete();
+
         DB::table('votes')
             ->insert([
                 'question_id' => $request->qid,
@@ -133,6 +147,13 @@ class WelcomeController extends Controller
             ->where('user_id', '=', $request->uid)
             ->where('status', '=', 'up')
             ->delete();
+        
+        DB::table('votes')
+        ->insert([
+            'question_id' => $request->qid,
+            'user_id' => $request->uid,
+            'status' => 'down'
+        ]);
 
         return redirect()->action('WelcomeController@index');
     }
