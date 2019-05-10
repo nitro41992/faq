@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Auth;
 
 class WelcomeController extends Controller
 {
@@ -25,17 +26,19 @@ class WelcomeController extends Controller
                 $join->on('downv.question_id', '=', 'questions.id')
                     ->where('downv.status', '=', 'down');
             })
-            ->select('questions.id', 'questions.body', DB::raw('count(distinct(answers.id)) as answer_count'), DB::raw('count(upv.id) - count(downv.id) as vote_count'))
+            ->select('questions.id', 'questions.body', DB::raw('count(distinct(answers.id)) as answer_count'), DB::raw('count(distinct(upv.id)) - count(distinct(downv.id)) as vote_count'))
             ->groupBy('questions.id', 'questions.body')
             ->orderBy('vote_count', 'desc')
             ->orderBy('answer_count', 'desc')
             ->get();
 
-
+        $user = Auth::user();
         //dd($questions);
         $obj['questions'] = $questions;
+
+        //dd($obj);
         return view('welcome')
-            ->with(compact('obj'));
+            ->with(compact('obj', 'user'));
     }
 
     /**
@@ -102,5 +105,30 @@ class WelcomeController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function upvote(Request $request)
+    {
+        $input = $request->all();
+        DB::table('votes')
+            ->insert([
+                'question_id' => $request->qid,
+                'user_id' => $request->uid,
+                'status' => 'up'
+            ]);
+
+
+        return redirect()->action('WelcomeController@index');
+    }
+
+    public function downvote(Request $request)
+    {
+        DB::table('votes')
+            ->where('question_id', '=', $request->qid)
+            ->where('user_id', '=', $request->uid)
+            ->where('status', '=', 'up')
+            ->delete();
+
+        return redirect()->action('WelcomeController@index');
     }
 }

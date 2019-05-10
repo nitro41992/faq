@@ -17,10 +17,27 @@
             <tr>
                 <td>
                     <div class="row text-center">
-                        <span class="col-md-12 fas fa-arrow-up"></span>
-                        <span
-                            class="col-md-12 font-weight-bold {{$question->vote_count >= 0 ? 'text-success' : 'text-danger'}}">{{$question->vote_count}}</span>
-                        <span class="col-md-12 fas fa-arrow-down"></span>
+                        <form class="col-md-12" id="upvote" method="POST" action=" {{ route('welcome.upvote', 
+                        [
+                            'qid' => $question->id,
+                            'uid' => $user->id
+                        ]
+                        ) }}">
+                            @csrf
+                            <button class="fas fa-arrow-up" style="color:gray"></button>
+                        </form>
+                        <div
+                            class="col-md-12 font-weight-bold {{$question->vote_count >= 0 ? 'text-success' : 'text-danger'}}">
+                            {{$question->vote_count}}</div>
+                        <form class="col-md-12" id="downvote" method="POST" action=" {{ route('welcome.downvote', 
+                        [
+                            'qid' => $question->id,
+                            'uid' => $user->id
+                        ]
+                        ) }}">
+                            @csrf
+                            <button class="fas fa-arrow-down" style="color:gray"></button>
+                        </form>
                     </div>
                 </td>
                 <td class="font-weight-bold">{{$question->body}}</td>
@@ -31,5 +48,23 @@
             @endforeach
         </tbody>
     </table>
+    <script type="text/javascript">
+        $('upvote').submit(function( event ) {
+            event.preventDefault();
+            $.ajax({
+                url: 'http://myserver.dev/myAjaxCallURI',
+                type: 'post',
+                data: $('form').serialize(), // Remember that you need to have your csrf token included
+                dataType: 'json',
+                success: function( _response ){
+                    // Handle your response..
+                },
+                error: function( _response ){
+                    // Handle error
+                }
+            });
+        });
+    </script>
+
 </div>
 @endsection
