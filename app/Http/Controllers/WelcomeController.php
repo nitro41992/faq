@@ -124,38 +124,57 @@ class WelcomeController extends Controller
 
     public function upvote(Request $request)
     {
-        DB::table('votes')
+        $downvoted =  DB::table('votes')
+        ->where('question_id', '=', $request->qid)
+        ->where('user_id', '=', $request->uid)
+        ->where('status', '=', 'down')
+        ->first();
+
+        if(!empty($downvoted)){
+            DB::table('votes')
             ->where('question_id', '=', $request->qid)
             ->where('user_id', '=', $request->uid)
             ->where('status', '=', 'down')
             ->delete();
-
-        DB::table('votes')
+            return redirect()->action('WelcomeController@index');
+        } else {
+            DB::table('votes')
             ->insert([
                 'question_id' => $request->qid,
                 'user_id' => $request->uid,
                 'status' => 'up'
             ]);
-
-
-        return redirect()->action('WelcomeController@index');
+            return redirect()->action('WelcomeController@index');
+        }
     }
 
     public function downvote(Request $request)
     {
-        DB::table('votes')
-            ->where('question_id', '=', $request->qid)
-            ->where('user_id', '=', $request->uid)
-            ->where('status', '=', 'up')
-            ->delete();
-        
-        DB::table('votes')
-        ->insert([
-            'question_id' => $request->qid,
-            'user_id' => $request->uid,
-            'status' => 'down'
-        ]);
+        $upvoted =  DB::table('votes')
+        ->where('question_id', '=', $request->qid)
+        ->where('user_id', '=', $request->uid)
+        ->where('status', '=', 'up')
+        ->first();
 
-        return redirect()->action('WelcomeController@index');
+        if(!empty($upvoted)){
+
+            DB::table('votes')
+                ->where('question_id', '=', $request->qid)
+                ->where('user_id', '=', $request->uid)
+                ->where('status', '=', 'up')
+                ->delete();
+
+            return redirect()->action('WelcomeController@index');
+        }
+        else{
+            DB::table('votes')
+            ->insert([
+                'question_id' => $request->qid,
+                'user_id' => $request->uid,
+                'status' => 'down'
+            ]);
+    
+            return redirect()->action('WelcomeController@index');
+        }
     }
 }

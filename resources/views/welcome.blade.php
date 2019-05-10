@@ -31,7 +31,9 @@
                         ]
                         ) }}">
                             @csrf
-                            <button class="btn btn-xs fas fa-arrow-up" style="{{ in_array($question->id, $upvotes) ? 'color:gray' : 'color:orange' }}" {{ in_array($question->id, $upvotes) ? 'disabled' : null }}></button>
+                            <button class="btn btn-xs fas fa-arrow-up" 
+                            style="{{ in_array($question->id, $upvotes) ? 'color:gray' : 'color:orange' }}" 
+                            {{ in_array($question->id, $upvotes) ? 'disabled' : null }}></button>
                         </form>
                         <div class="col-md-12 font-weight-bold text-secondary">
                             {{$question->vote_count}}</div>
@@ -42,7 +44,9 @@
                         ]
                         ) }}">
                             @csrf
-                            <button class="btn btn-xs fas fa-arrow-down" style="{{ in_array($question->id, $downvotes) ? 'color:gray' : 'color:orange' }}" {{ in_array($question->id, $downvotes) ? 'disabled' : null }}></button>
+                            <button class="btn btn-xs fas fa-arrow-down" 
+                            style="{{ in_array($question->id, $downvotes) ? 'color:gray' : 'color:orange' }}" 
+                            {{ in_array($question->id, $downvotes) ? 'disabled' : null }}></button>
                         </form>
                         @endguest
                     </div>
