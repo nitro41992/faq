@@ -24,10 +24,9 @@
                         ]
                         ) }}">
                             @csrf
-                            <button class="fas fa-arrow-up" style="color:gray"></button>
+                            <button class="btn btn-xs fas fa-arrow-up" style="color:orange" disabled></button>
                         </form>
-                        <div
-                            class="col-md-12 font-weight-bold {{$question->vote_count >= 0 ? 'text-success' : 'text-danger'}}">
+                        <div class="col-md-12 font-weight-bold text-secondary">
                             {{$question->vote_count}}</div>
                         <form class="col-md-12" id="downvote" method="POST" action=" {{ route('welcome.downvote', 
                         [
@@ -36,7 +35,7 @@
                         ]
                         ) }}">
                             @csrf
-                            <button class="fas fa-arrow-down" style="color:gray"></button>
+                            <button class="btn btn-xs fas fa-arrow-down" style="color:orange"></button>
                         </form>
                     </div>
                 </td>
@@ -48,23 +47,5 @@
             @endforeach
         </tbody>
     </table>
-    <script type="text/javascript">
-        $('upvote').submit(function( event ) {
-            event.preventDefault();
-            $.ajax({
-                url: 'http://myserver.dev/myAjaxCallURI',
-                type: 'post',
-                data: $('form').serialize(), // Remember that you need to have your csrf token included
-                dataType: 'json',
-                success: function( _response ){
-                    // Handle your response..
-                },
-                error: function( _response ){
-                    // Handle error
-                }
-            });
-        });
-    </script>
-
 </div>
 @endsection
