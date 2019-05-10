@@ -15,8 +15,14 @@
         <tbody>
             @foreach($obj['questions'] as $question)
             <tr>
-                <td class="text-center lead {{$question->vote_count >= 0 ? 'text-success' : 'text-danger'}}">
-                    {{$question->vote_count}}</td>
+                <td>
+                    <div class="row text-center">
+                        <span class="col-md-12 fas fa-arrow-up"></span>
+                        <span
+                            class="col-md-12 font-weight-bold {{$question->vote_count >= 0 ? 'text-success' : 'text-danger'}}">{{$question->vote_count}}</span>
+                        <span class="col-md-12 fas fa-arrow-down"></span>
+                    </div>
+                </td>
                 <td class="font-weight-bold">{{$question->body}}</td>
                 <td class="text-center">{{$question->answer_count}}</td>
                 <td> <a name="doc_select" href="{{ route('questions.show', ['id' => $question->id]) }}"
