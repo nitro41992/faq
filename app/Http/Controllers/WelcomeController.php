@@ -182,4 +182,35 @@ class WelcomeController extends Controller
             return redirect()->action('WelcomeController@index');
         }
     }
+
+    public function upvoteAjax(Request $request){
+       
+        if($request->ajax()) {
+            // $downvoted =  DB::table('votes')
+            //     ->where('question_id', '=', $request->question_id)
+            //     ->where('user_id', '=', $request->user_id)
+            //     ->where('status', '=', 'down')
+            //     ->first();
+
+            // if(!empty($downvoted)){
+            //     DB::table('votes')
+            //     ->where('question_id', '=', $request->question_id)
+            //     ->where('user_id', '=', $request->user_id)
+            //     ->where('status', '=', 'down')
+            //     ->delete();
+            //     return response()->json($request);
+            // } else {
+            //     DB::table('votes')
+            //     ->insert([
+            //         'question_id' => $request->question_id,
+            //         'user_id' => $request->user_id,
+            //         'status' => 'up'
+            //     ]);
+            //     return response()->json($request);
+            // }
+            return response()->json($request);
+        }
+
+        
+     }
 }
