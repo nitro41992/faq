@@ -13,9 +13,8 @@
 
 
 Route::get('/', 'WelcomeController@index')->name('welcome');
-//Route::post('/upvote', 'WelcomeController@upvote')->name('welcome.upvote');
-Route::post('/downvote', 'WelcomeController@downvote')->name('welcome.downvote');
 Route::post('/upvoteAjax', 'WelcomeController@upvoteAjax')->name('welcome.upvoteAjax');
+Route::post('/downvoteAjax', 'WelcomeController@downvoteAjax')->name('welcome.downvoteAjax');
 
 
 Auth::routes();
