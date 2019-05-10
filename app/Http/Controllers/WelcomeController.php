@@ -37,22 +37,22 @@ class WelcomeController extends Controller
 
         $upvotes = null;
         $downvotes = null;
-        if(Auth::check()){
+        if (Auth::check()) {
             $upvotes = DB::table('votes')
-            ->where('user_id', '=', $user->id)
-            ->whereIn('question_id', $questions->pluck('id'))
-            ->where('status', '=', 'up')
-            ->pluck('question_id')
-            ->toArray();
+                ->where('user_id', '=', $user->id)
+                ->whereIn('question_id', $questions->pluck('id'))
+                ->where('status', '=', 'up')
+                ->pluck('question_id')
+                ->toArray();
 
             $downvotes = DB::table('votes')
-            ->where('user_id', '=', $user->id)
-            ->whereIn('question_id', $questions->pluck('id'))
-            ->where('status', '=', 'down')
-            ->pluck('question_id')
-            ->toArray();
+                ->where('user_id', '=', $user->id)
+                ->whereIn('question_id', $questions->pluck('id'))
+                ->where('status', '=', 'down')
+                ->pluck('question_id')
+                ->toArray();
         }
-        
+
 
         $obj['questions'] = $questions;
 
@@ -130,25 +130,25 @@ class WelcomeController extends Controller
     public function upvote(Request $request)
     {
         $downvoted =  DB::table('votes')
-        ->where('question_id', '=', $request->qid)
-        ->where('user_id', '=', $request->uid)
-        ->where('status', '=', 'down')
-        ->first();
-
-        if(!empty($downvoted)){
-            DB::table('votes')
             ->where('question_id', '=', $request->qid)
             ->where('user_id', '=', $request->uid)
             ->where('status', '=', 'down')
-            ->delete();
+            ->first();
+
+        if (!empty($downvoted)) {
+            DB::table('votes')
+                ->where('question_id', '=', $request->qid)
+                ->where('user_id', '=', $request->uid)
+                ->where('status', '=', 'down')
+                ->delete();
             return redirect()->action('WelcomeController@index');
         } else {
             DB::table('votes')
-            ->insert([
-                'question_id' => $request->qid,
-                'user_id' => $request->uid,
-                'status' => 'up'
-            ]);
+                ->insert([
+                    'question_id' => $request->qid,
+                    'user_id' => $request->uid,
+                    'status' => 'up'
+                ]);
             return redirect()->action('WelcomeController@index');
         }
     }
@@ -156,12 +156,12 @@ class WelcomeController extends Controller
     public function downvote(Request $request)
     {
         $upvoted =  DB::table('votes')
-        ->where('question_id', '=', $request->qid)
-        ->where('user_id', '=', $request->uid)
-        ->where('status', '=', 'up')
-        ->first();
+            ->where('question_id', '=', $request->qid)
+            ->where('user_id', '=', $request->uid)
+            ->where('status', '=', 'up')
+            ->first();
 
-        if(!empty($upvoted)){
+        if (!empty($upvoted)) {
 
             DB::table('votes')
                 ->where('question_id', '=', $request->qid)
@@ -170,47 +170,45 @@ class WelcomeController extends Controller
                 ->delete();
 
             return redirect()->action('WelcomeController@index');
-        }
-        else{
+        } else {
             DB::table('votes')
-            ->insert([
-                'question_id' => $request->qid,
-                'user_id' => $request->uid,
-                'status' => 'down'
-            ]);
-    
+                ->insert([
+                    'question_id' => $request->qid,
+                    'user_id' => $request->uid,
+                    'status' => 'down'
+                ]);
+
             return redirect()->action('WelcomeController@index');
         }
     }
 
-    public function upvoteAjax(Request $request){
-       
-        if($request->ajax()) {
-            // $downvoted =  DB::table('votes')
-            //     ->where('question_id', '=', $request->question_id)
-            //     ->where('user_id', '=', $request->user_id)
-            //     ->where('status', '=', 'down')
-            //     ->first();
+    public function upvoteAjax(Request $request)
+    {
 
-            // if(!empty($downvoted)){
-            //     DB::table('votes')
-            //     ->where('question_id', '=', $request->question_id)
-            //     ->where('user_id', '=', $request->user_id)
-            //     ->where('status', '=', 'down')
-            //     ->delete();
-            //     return response()->json($request);
-            // } else {
-            //     DB::table('votes')
-            //     ->insert([
-            //         'question_id' => $request->question_id,
-            //         'user_id' => $request->user_id,
-            //         'status' => 'up'
-            //     ]);
-            //     return response()->json($request);
-            // }
-            return response()->json($request);
+        if ($request->ajax()) {
+            $downvoted =  DB::table('votes')
+                ->where('question_id', '=', $request->question_id)
+                ->where('user_id', '=', $request->user_id)
+                ->where('status', '=', 'down')
+                ->first();
+
+            if (!empty($downvoted)) {
+                DB::table('votes')
+                    ->where('question_id', '=', $request->question_id)
+                    ->where('user_id', '=', $request->user_id)
+                    ->where('status', '=', 'down')
+                    ->delete();
+                return response()->json($request);
+            } else {
+                DB::table('votes')
+                    ->insert([
+                        'question_id' => $request->question_id,
+                        'user_id' => $request->user_id,
+                        'status' => 'up'
+                    ]);
+                return response()->json($request);
+            }
+            //return response()->json($request);
         }
-
-        
-     }
+    }
 }
