@@ -30,7 +30,8 @@ class WelcomeController extends Controller
             ->groupBy('questions.id', 'questions.body')
             ->orderBy('vote_count', 'desc')
             ->orderBy('answer_count', 'desc')
-            ->get();
+            //->get();
+            ->paginate(15);
 
         $user = Auth::user();
 

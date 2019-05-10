@@ -56,5 +56,7 @@
             @endforeach
         </tbody>
     </table>
+    {{ $obj['questions']->links() }}
 </div>
+
 @endsection
