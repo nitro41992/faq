@@ -52,8 +52,8 @@
                     </div>
                 </td>
                 {{-- <td class="font-weight-bold">{{$question->id}}</td> --}}
-                <td class="font-weight-bold">{{$question->body}}</td>
-                <td class="text-center">{{$question->answer_count}}</td>
+                <td class="text-secondary">{{$question->body}}</td>
+                <td class="font-weight-bold text-center text-secondary">{{$question->answer_count}}</td>
                 <td> <a name="doc_select" href="{{ route('questions.show', ['id' => $question->id]) }}"
                         class="btn btn-primary btn-sm">Select</a></td>
             </tr>
