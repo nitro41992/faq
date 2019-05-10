@@ -6,9 +6,9 @@
         <thead class="thead-dark">
             <tr>
                 <th scope="col">Votes</th>
-                <th scope="col">Question ID</th>
+                {{-- <th scope="col">Question ID</th> --}}
                 <th scope="col">Question</th>
-                <th scope="col">Answer Count</th>
+                <th scope="col">Answers</th>
                 <th scope="col">Actions</th>
 
             </tr>
@@ -51,7 +51,7 @@
                         @endguest
                     </div>
                 </td>
-                <td class="font-weight-bold">{{$question->id}}</td>
+                {{-- <td class="font-weight-bold">{{$question->id}}</td> --}}
                 <td class="font-weight-bold">{{$question->body}}</td>
                 <td class="text-center">{{$question->answer_count}}</td>
                 <td> <a name="doc_select" href="{{ route('questions.show', ['id' => $question->id]) }}"

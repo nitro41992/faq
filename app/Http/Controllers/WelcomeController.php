@@ -35,19 +35,24 @@ class WelcomeController extends Controller
 
         $user = Auth::user();
 
-        $upvotes = DB::table('votes')
+        $upvotes = null;
+        $downvotes = null;
+        if(Auth::check()){
+            $upvotes = DB::table('votes')
             ->where('user_id', '=', $user->id)
             ->whereIn('question_id', $questions->pluck('id'))
             ->where('status', '=', 'up')
             ->pluck('question_id')
             ->toArray();
 
-        $downvotes = DB::table('votes')
-        ->where('user_id', '=', $user->id)
-        ->whereIn('question_id', $questions->pluck('id'))
-        ->where('status', '=', 'down')
-        ->pluck('question_id')
-        ->toArray();
+            $downvotes = DB::table('votes')
+            ->where('user_id', '=', $user->id)
+            ->whereIn('question_id', $questions->pluck('id'))
+            ->where('status', '=', 'down')
+            ->pluck('question_id')
+            ->toArray();
+        }
+        
 
         $obj['questions'] = $questions;
 
