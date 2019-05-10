@@ -17,6 +17,12 @@
             <tr>
                 <td>
                     <div class="row text-center">
+                        @guest
+                        <button class="col-md-12 btn btn-xs fas fa-arrow-up" style="color:orange"></button>
+                        <div class="col-md-12 font-weight-bold text-secondary">
+                            {{$question->vote_count}}</div>
+                        <button class="col-md-12 btn btn-xs fas fa-arrow-down" style="color:orange"></button>
+                        @else
                         <form class="col-md-12" id="upvote" method="POST" action=" {{ route('welcome.upvote', 
                         [
                             'qid' => $question->id,
@@ -24,7 +30,7 @@
                         ]
                         ) }}">
                             @csrf
-                            <button class="btn btn-xs fas fa-arrow-up" style="color:orange" disabled></button>
+                            <button class="btn btn-xs fas fa-arrow-up" style="color:orange"></button>
                         </form>
                         <div class="col-md-12 font-weight-bold text-secondary">
                             {{$question->vote_count}}</div>
@@ -37,6 +43,7 @@
                             @csrf
                             <button class="btn btn-xs fas fa-arrow-down" style="color:orange"></button>
                         </form>
+                        @endguest
                     </div>
                 </td>
                 <td class="font-weight-bold">{{$question->body}}</td>

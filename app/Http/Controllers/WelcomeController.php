@@ -34,18 +34,16 @@ class WelcomeController extends Controller
 
         $user = Auth::user();
 
-
-
-        $votes = DB::table('votes')
-            ->where('user_id', '=', $user->id)
-            ->whereIn('question_id', $questions->pluck('id'))
-            ->get();
+        // $votes = DB::table('votes')
+        //     ->where('user_id', '=', $user->id)
+        //     ->whereIn('question_id', $questions->pluck('id'))
+        //     ->get();
 
         $obj['questions'] = $questions;
 
         //dd($votes);
         return view('welcome')
-            ->with(compact('obj', 'user', 'votes'));
+            ->with(compact('obj', 'user'));
     }
 
     /**
