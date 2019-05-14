@@ -12,6 +12,7 @@
                         name="question_search">
                     <div class="input-group-btn">
                         <button class="btn btn-primary" type="submit">Search</button>
+                        <button class="btn btn-primary" action="{{ route('welcome') }}">Clear</button>
                     </div>
                 </div>
             </form>
