@@ -37,10 +37,6 @@
                                     {{ in_array($question->id, $upvotes) ? 'disabled' : null }}></button>
                             </form>
 
-                            <div class="col-md-12 font-weight-bold text-secondary">
-                                {{$question->vote_count}}
-                            </div>
-
                             <form class="col-md-12" id="downvote">
                                 <input class="form-control question_id" type="hidden" value="{{$question->id}}"
                                     id="question_id" data-id="{{$question->id}}">

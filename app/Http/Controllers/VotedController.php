@@ -38,8 +38,7 @@ class VotedController extends Controller
                 $join->on('downv.question_id', '=', 'questions.id')
                     ->where('downv.status', '=', 'down');
             })
-            ->select('questions.id', 'questions.body', DB::raw('count(distinct(answers.id)) as answer_count'), 
-            DB::raw('count(distinct(upv.id)) - count(distinct(downv.id)) as vote_count'))
+            ->select('questions.id', 'questions.body', DB::raw('count(distinct(answers.id)) as answer_count'))
             ->where('upv.user_id', '=', $user->id)
             ->orWhere('downv.user_id', '=', $user->id)
             ->groupBy('questions.id', 'questions.body')
