@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vote extends Model
 {
-    public function questions() {
+    public function question() {
 
-        return $this->hasMany('App\Question');
+        return $this->belongsTo('App\Question');
 
     }
 
-    public function users() {
+    public function user() {
 
-        return $this->hasMany('App\User');
+        return $this->belongsTo('App\User');
 
     }
 }
