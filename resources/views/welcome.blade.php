@@ -3,6 +3,19 @@
 @section('content')
 <div id="question-list">
     <div class="container">
+        <div class="col-sm-6 mb-4">
+            <form class="navbar-form" action="{{ route('welcome.filterQuestion') }}" method="GET"
+                role="search">
+                @csrf
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for a question"
+                        name="question_search">
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
         <table class="table">
             <thead class="thead-dark">
                 <tr>

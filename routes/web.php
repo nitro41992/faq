@@ -15,6 +15,7 @@
 Route::get('/', 'WelcomeController@index')->name('welcome');
 Route::post('/upvoteAjax', 'WelcomeController@upvoteAjax')->name('welcome.upvoteAjax');
 Route::post('/downvoteAjax', 'WelcomeController@downvoteAjax')->name('welcome.downvoteAjax');
+Route::get('/filterQuestion', 'WelcomeController@filterQuestion')->name('welcome.filterQuestion');
 
 
 Route::get('/voted', 'VotedController@index')->name('voted');

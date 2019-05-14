@@ -17,6 +17,7 @@ class WelcomeController extends Controller
     {
         $this->middleware('auth');
     }
+
     public function index()
     {
         $questions = self::getQuestions(20);
@@ -29,25 +30,48 @@ class WelcomeController extends Controller
             ->with(compact(['questions', 'user', 'upvotes', 'downvotes']));
     }
 
-    private function getQuestions($pg) {
+    private function getQuestions($pg, $questionText=null) {
 
-        $questions = DB::table('questions')
-            ->leftJoin('answers', 'questions.id', '=', 'answers.question_id')
-            ->leftJoin('users', 'users.id', '=', 'questions.user_id')
-            ->leftJoin('votes as upv', function ($join) {
-                $join->on('questions.id', '=', 'upv.question_id')
-                    ->where('upv.status', '=', 'up');
-            })
-            ->leftJoin('votes as downv', function ($join) {
-                $join->on('downv.question_id', '=', 'questions.id')
-                    ->where('downv.status', '=', 'down');
-            })
-            ->select('questions.id', 'questions.body', DB::raw('count(distinct(answers.id)) as answer_count'), 
-            DB::raw('count(distinct(upv.id)) - count(distinct(downv.id)) as vote_count'))
-            ->groupBy('questions.id', 'questions.body')
-            ->orderBy('vote_count', 'desc')
-            ->orderBy('answer_count', 'desc')
-            ->paginate($pg);
+        //->where('documents.document_id','LIKE','%'.$request->get('doc_id_search').'%')
+
+        if (is_null($questionText)){
+            $questions = DB::table('questions')
+                ->leftJoin('answers', 'questions.id', '=', 'answers.question_id')
+                ->leftJoin('users', 'users.id', '=', 'questions.user_id')
+                ->leftJoin('votes as upv', function ($join) {
+                    $join->on('questions.id', '=', 'upv.question_id')
+                        ->where('upv.status', '=', 'up');
+                })
+                ->leftJoin('votes as downv', function ($join) {
+                    $join->on('downv.question_id', '=', 'questions.id')
+                        ->where('downv.status', '=', 'down');
+                })
+                ->select('questions.id', 'questions.body', DB::raw('count(distinct(answers.id)) as answer_count'), 
+                DB::raw('count(distinct(upv.id)) - count(distinct(downv.id)) as vote_count'))
+                ->groupBy('questions.id', 'questions.body')
+                ->orderBy('vote_count', 'desc')
+                ->orderBy('answer_count', 'desc')
+                ->paginate($pg);
+        }else{
+            $questions = DB::table('questions')
+                ->leftJoin('answers', 'questions.id', '=', 'answers.question_id')
+                ->leftJoin('users', 'users.id', '=', 'questions.user_id')
+                ->leftJoin('votes as upv', function ($join) {
+                    $join->on('questions.id', '=', 'upv.question_id')
+                        ->where('upv.status', '=', 'up');
+                })
+                ->leftJoin('votes as downv', function ($join) {
+                    $join->on('downv.question_id', '=', 'questions.id')
+                        ->where('downv.status', '=', 'down');
+                })
+                ->where('questions.body','LIKE','%'.$questionText.'%')
+                ->select('questions.id', 'questions.body', DB::raw('count(distinct(answers.id)) as answer_count'), 
+                DB::raw('count(distinct(upv.id)) - count(distinct(downv.id)) as vote_count'))
+                ->groupBy('questions.id', 'questions.body')
+                ->orderBy('vote_count', 'desc')
+                ->orderBy('answer_count', 'desc')
+                ->paginate($pg);
+        }
 
         return $questions;
 
@@ -131,70 +155,24 @@ class WelcomeController extends Controller
         }
     }
 
-    
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function filterQuestion(Request $request) {
+        
+        
+        $questions = self::getQuestions(20, $request->get('question_search'));
+
+        $user = Auth::user();
+        $upvotes = self::getVotes($questions->getCollection(), $user, 'up');
+        $downvotes = self::getVotes($questions->getCollection(), $user, 'down');
+
+        
+
+        if(count($questions->getCollection()) > 0){
+            return view('welcome')
+            ->with(compact(['questions', 'user', 'upvotes', 'downvotes']));
+        }else{           
+            return $this->index();
+        }
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
