@@ -25,4 +25,5 @@
 
 **Other Notes:**
 
-Implemented ajax in order to allow for upvoting and downvoting without refreshing the page.
+ - Implemented ajax in order to allow for upvoting and downvoting without refreshing the page.
+ - Use test username: stoltenberg.rachelle@example.net and test password: "password" in order to login or create user by clicking on Register.
