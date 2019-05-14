@@ -15,19 +15,17 @@ class WelcomeController extends Controller
      */
     public function index()
     {
-        $questions = self::getQuestions();
+        $questions = self::getQuestions(20);
 
         $user = Auth::user();
         $upvotes = self::getVotes($questions->getCollection(), $user, 'up');
         $downvotes = self::getVotes($questions->getCollection(), $user, 'down');
 
-        $obj['questions'] = $questions;
-
         return view('welcome')
-            ->with(compact('obj', 'user', 'upvotes', 'downvotes'));
+            ->with(compact(['questions', 'user', 'upvotes', 'downvotes']));
     }
 
-    private function getQuestions() {
+    private function getQuestions($pg) {
 
         $questions = DB::table('questions')
             ->leftJoin('answers', 'questions.id', '=', 'answers.question_id')
@@ -45,7 +43,7 @@ class WelcomeController extends Controller
             ->groupBy('questions.id', 'questions.body')
             ->orderBy('vote_count', 'desc')
             ->orderBy('answer_count', 'desc')
-            ->paginate(15);
+            ->paginate($pg);
 
         return $questions;
 

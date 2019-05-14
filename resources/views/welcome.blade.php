@@ -7,7 +7,6 @@
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Votes</th>
-                    {{-- <th scope="col">Question ID</th> --}}
                     <th scope="col">Question</th>
                     <th scope="col">Answers</th>
                     <th scope="col">Actions</th>
@@ -15,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($obj['questions'] as $question)
+                @foreach($questions as $question)
                 <tr>
                     <td>
                         <div class="row text-center">
@@ -25,7 +24,7 @@
                             <div class="col-md-12 font-weight-bold text-secondary">
                                 {{$question->vote_count}}</div>
                             <button class="col-md-12 btn btn-xs fas fa-arrow-down" style="color:gray" disabled></button>
-                            
+
                             @else
 
                             <form class="col-md-12" id="upvote">
@@ -63,7 +62,7 @@
                 @endforeach
             </tbody>
         </table>
-        {{ $obj['questions']->links() }}
+        {{ $questions->links() }}
 
         <script type="text/javascript">
             $(document).ready(function(){
