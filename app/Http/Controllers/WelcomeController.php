@@ -32,8 +32,6 @@ class WelcomeController extends Controller
 
     private function getQuestions($pg, $questionText=null) {
 
-        //->where('documents.document_id','LIKE','%'.$request->get('doc_id_search').'%')
-
         if (is_null($questionText)){
             $questions = DB::table('questions')
                 ->leftJoin('answers', 'questions.id', '=', 'answers.question_id')
