@@ -25,6 +25,7 @@
                             <div class="col-md-12 font-weight-bold text-secondary">
                                 {{$question->vote_count}}</div>
                             <button class="col-md-12 btn btn-xs fas fa-arrow-down" style="color:gray" disabled></button>
+                            
                             @else
 
                             <form class="col-md-12" id="upvote">
@@ -37,11 +38,9 @@
                                     {{ in_array($question->id, $upvotes) ? 'disabled' : null }}></button>
                             </form>
 
-
                             <div class="col-md-12 font-weight-bold text-secondary">
                                 {{$question->vote_count}}
                             </div>
-
 
                             <form class="col-md-12" id="downvote">
                                 <input class="form-control question_id" type="hidden" value="{{$question->id}}"
@@ -56,7 +55,6 @@
                             @endguest
                         </div>
                     </td>
-                    {{-- <td class="font-weight-bold">{{$question->id}}</td> --}}
                     <td class="font-weight-bold">{{$question->body}}</td>
                     <td class="font-weight-bold text-center text-secondary">{{$question->answer_count}}</td>
                     <td> <a name="doc_select" href="{{ route('questions.show', ['id' => $question->id]) }}"

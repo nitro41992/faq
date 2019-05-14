@@ -15,6 +15,20 @@ class WelcomeController extends Controller
      */
     public function index()
     {
+        $questions = self::getQuestions();
+
+        $user = Auth::user();
+        $upvotes = self::getVotes($questions->getCollection(), $user, 'up');
+        $downvotes = self::getVotes($questions->getCollection(), $user, 'down');
+
+        $obj['questions'] = $questions;
+
+        return view('welcome')
+            ->with(compact('obj', 'user', 'upvotes', 'downvotes'));
+    }
+
+    private function getQuestions() {
+
         $questions = DB::table('questions')
             ->leftJoin('answers', 'questions.id', '=', 'answers.question_id')
             ->leftJoin('users', 'users.id', '=', 'questions.user_id')
@@ -26,41 +40,96 @@ class WelcomeController extends Controller
                 $join->on('downv.question_id', '=', 'questions.id')
                     ->where('downv.status', '=', 'down');
             })
-            ->select('questions.id', 'questions.body', DB::raw('count(distinct(answers.id)) as answer_count'), DB::raw('count(distinct(upv.id)) - count(distinct(downv.id)) as vote_count'))
+            ->select('questions.id', 'questions.body', DB::raw('count(distinct(answers.id)) as answer_count'), 
+            DB::raw('count(distinct(upv.id)) - count(distinct(downv.id)) as vote_count'))
             ->groupBy('questions.id', 'questions.body')
             ->orderBy('vote_count', 'desc')
             ->orderBy('answer_count', 'desc')
-            //->get();
             ->paginate(15);
 
-        $user = Auth::user();
+        return $questions;
 
-        $upvotes = null;
-        $downvotes = null;
+    }
+
+    private function getVotes($questions, $user, $status) {
+
+        $votes = null;
         if (Auth::check()) {
-            $upvotes = DB::table('votes')
+            $votes = DB::table('votes')
                 ->where('user_id', '=', $user->id)
                 ->whereIn('question_id', $questions->pluck('id'))
-                ->where('status', '=', 'up')
-                ->pluck('question_id')
-                ->toArray();
-
-            $downvotes = DB::table('votes')
-                ->where('user_id', '=', $user->id)
-                ->whereIn('question_id', $questions->pluck('id'))
-                ->where('status', '=', 'down')
+                ->where('status', '=', $status)
                 ->pluck('question_id')
                 ->toArray();
         }
 
+        return $votes;
 
-        $obj['questions'] = $questions;
-
-        //dd($questions);
-        return view('welcome')
-            ->with(compact('obj', 'user', 'upvotes', 'downvotes'));
     }
 
+    public function upvoteAjax(Request $request)
+    {
+
+        if ($request->ajax()) {
+            $downvoted =  DB::table('votes')
+                ->where('question_id', '=', $request->question_id)
+                ->where('user_id', '=', $request->user_id)
+                ->where('status', '=', 'down')
+                ->first();
+
+            if (!empty($downvoted)) {
+                DB::table('votes')
+                    ->where('question_id', '=', $request->question_id)
+                    ->where('user_id', '=', $request->user_id)
+                    ->where('status', '=', 'down')
+                    ->delete();
+                return response()->json($request);
+            } else {
+                DB::table('votes')
+                    ->insert([
+                        'question_id' => $request->question_id,
+                        'user_id' => $request->user_id,
+                        'status' => 'up'
+                    ]);
+                return response()->json($request);
+            }
+        }
+    }
+
+    public function downvoteAjax(Request $request)
+    {
+
+        if ($request->ajax()) {
+
+            $upvoted =  DB::table('votes')
+                ->where('question_id', '=', $request->question_id)
+                ->where('user_id', '=', $request->user_id)
+                ->where('status', '=', 'up')
+                ->first();
+
+            if (!empty($upvoted)) {
+
+                DB::table('votes')
+                    ->where('question_id', '=', $request->question_id)
+                    ->where('user_id', '=', $request->user_id)
+                    ->where('status', '=', 'up')
+                    ->delete();
+
+                return response()->json($request);
+            } else {
+                DB::table('votes')
+                    ->insert([
+                        'question_id' => $request->question_id,
+                        'user_id' => $request->user_id,
+                        'status' => 'down'
+                    ]);
+
+                return response()->json($request);
+            }
+        }
+    }
+
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -125,67 +194,5 @@ class WelcomeController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function upvoteAjax(Request $request)
-    {
-
-        if ($request->ajax()) {
-            $downvoted =  DB::table('votes')
-                ->where('question_id', '=', $request->question_id)
-                ->where('user_id', '=', $request->user_id)
-                ->where('status', '=', 'down')
-                ->first();
-
-            if (!empty($downvoted)) {
-                DB::table('votes')
-                    ->where('question_id', '=', $request->question_id)
-                    ->where('user_id', '=', $request->user_id)
-                    ->where('status', '=', 'down')
-                    ->delete();
-                return response()->json($request);
-            } else {
-                DB::table('votes')
-                    ->insert([
-                        'question_id' => $request->question_id,
-                        'user_id' => $request->user_id,
-                        'status' => 'up'
-                    ]);
-                return response()->json($request);
-            }
-        }
-    }
-
-    public function downvoteAjax(Request $request)
-    {
-
-        if ($request->ajax()) {
-
-            $upvoted =  DB::table('votes')
-                ->where('question_id', '=', $request->question_id)
-                ->where('user_id', '=', $request->user_id)
-                ->where('status', '=', 'up')
-                ->first();
-
-            if (!empty($upvoted)) {
-
-                DB::table('votes')
-                    ->where('question_id', '=', $request->question_id)
-                    ->where('user_id', '=', $request->user_id)
-                    ->where('status', '=', 'up')
-                    ->delete();
-
-                return response()->json($request);
-            } else {
-                DB::table('votes')
-                    ->insert([
-                        'question_id' => $request->question_id,
-                        'user_id' => $request->user_id,
-                        'status' => 'down'
-                    ]);
-
-                return response()->json($request);
-            }
-        }
     }
 }
